@@ -34,43 +34,43 @@
 
             计算与网络 -> vpc网络 -> 创建vpc网络 -> 填入vpc网络名称 -> 创建,见下图步骤:
 
-            <img src="images/createvpc.png", width="2000px" align="center">
+            <img src="images/createvpc.png" width="2000px" align="center">
 
         * 创建私有网络
 
             计算与网络 -> 私有网络 -> 创建 -> 填入私有网络名称 -> 提交, 见下图:
 
-            <img src="images/createprivatenet.png", width="2000px" align="center">
+            <img src="images/createprivatenet.png" width="2000px" align="center">
 
             然后选择该私有网络加入到vpc网络, 见下图步骤:
 
-            <img src="images/net-vpc.png", width="2000px" align="center">
+            <img src="images/net-vpc.png" width="2000px" align="center">
 
         * 申请公网IP
 
             计算与网络 -> 公网IP -> 申请 -> 填入公网IP名称 -> 提交，　见下图步骤：
 
-            <img src="images/ip.png", width="2000px" align="center">
+            <img src="images/ip.png" width="2000px" align="center">
 
             然后将申请的公网IP绑定到vpc网络，见下图步骤:
 
-            <img src="images/ip-vpc.png", width="2000px" align="center">
+            <img src="images/ip-vpc.png" width="2000px" align="center">
 
         * 部署区块链服务
 
             进入[青云官网AppCenter中心](https://appcenter.qingcloud.com/)，在”搜索应用”栏搜索”阿尔山区块链平台预览版”,进入应用后选择部署到QingCloud,对各个节点完成设置后(网络设置选择前面创建的私有网络)，如下图所示:
 
-            <img src="images/cluster-setting-1.png", width="2000px" align="center">
+            <img src="images/cluster-setting-1.png" width="2000px" align="center">
 
-            <img src="images/cluster-setting-2.png", width="2000px" align="center">
+            <img src="images/cluster-setting-2.png" width="2000px" align="center">
 
-            <img src="images/cluster-setting-3.png", width="2000px" align="center">
+            <img src="images/cluster-setting-3.png" width="2000px" align="center">
 
-            <img src="images/cluster-setting-4.png", width="2000px" align="center">
+            <img src="images/cluster-setting-4.png" width="2000px" align="center">
 
             在集群列表中可以看到有３个节点正在创建，角色分别是区块链节点,区块链监控节点和代理节点, 如下图所示:
 
-            <img src="images/cluster.png", width="2000px" align="center">
+            <img src="images/cluster.png" width="2000px" align="center">
 
         * 网络配置
 
