@@ -32,29 +32,56 @@
 
         * 创建vpc网络
 
-            计算与网络 -> vpc网络 -> 创建vpc网络
+            计算与网络 -> vpc网络 -> 创建vpc网络 -> 填入vpc网络名称 -> 创建,见下图步骤:
+
+            <img src="images/createvpc.png", width="2000px" align="center">
 
         * 创建私有网络
 
-            计算与网络 -> 私有网络 -> 创建 -> 创建后选择该私有网络加入到vpc网络
+            计算与网络 -> 私有网络 -> 创建 -> 填入私有网络名称 -> 提交, 见下图:
+
+            <img src="images/createprivatenet.png", width="2000px" align="center">
+
+            然后选择该私有网络加入到vpc网络, 见下图步骤:
+
+            <img src="images/net-vpc.png", width="2000px" align="center">
 
         * 申请公网IP
 
-            计算与网络 -> 公网IP -> 申请 -> 将申请的公网IP绑定到vpc网络
+            计算与网络 -> 公网IP -> 申请 -> 填入公网IP名称 -> 提交，　见下图步骤：
+
+            <img src="images/ip.png", width="2000px" align="center">
+
+            然后将申请的公网IP绑定到vpc网络，见下图步骤:
+
+            <img src="images/ip-vpc.png", width="2000px" align="center">
 
         * 部署区块链服务
 
-            进入[青云官网AppCenter中心](https://appcenter.qingcloud.com/)，在”搜索应用”栏搜索”阿尔山区块链平台预览版”,进入应用后选择部署到QingCloud,对各个节点完成设置后(网络设置选择前面创建的私有网络)，在集群列表中可以看到有３个节点正在创建，角色分别是区块链节点,区块链监控节点和代理节点
+            进入[青云官网AppCenter中心](https://appcenter.qingcloud.com/)，在”搜索应用”栏搜索”阿尔山区块链平台预览版”,进入应用后选择部署到QingCloud,对各个节点完成设置后(网络设置选择前面创建的私有网络)，如下图所示:
+
+            <img src="images/cluster-setting-1.png", width="2000px" align="center">
+
+            <img src="images/cluster-setting-2.png", width="2000px" align="center">
+
+            <img src="images/cluster-setting-3.png", width="2000px" align="center">
+
+            <img src="images/cluster-setting-4.png", width="2000px" align="center">
+
+            在集群列表中可以看到有３个节点正在创建，角色分别是区块链节点,区块链监控节点和代理节点, 如下图所示:
+
+            <img src="images/cluster.png", width="2000px" align="center">
 
         * 网络配置
 
-            在上一步中，我们可以看到有3个角色创建，这些角色在创建完成后有对应的内网IP,接下来的网络设置中需要用到区块链监控节点的内网IP(假设为IP-1)以及代理节点的内网IP(IP-2),然后找到创建的vpc网络(计算与网络 -> vpc网络 -> 选择创建的vpc网络),选择管理配置 -> 端口转发 -> 添加规则，如下图所示:
-            <img src="images/8001.png" width="1200px" align="center">
+            在上一步中，我们可以看到有3个角色创建(对应上图中左边红圈起来的部分),这些角色在创建完成后有对应的内网IP,接下来的网络设置中需要用到区块链监控节点的内网IP(上图中内网IP为192.168.0.3,这个内网IP是由青云调度生成的，在此假设为IP-1)以及代理节点的内网IP(对应上图中的192.168.0.4, 在此假设为IP-2),然后找到创建的vpc网络(计算与网络 -> vpc网络 -> 选择创建的vpc网络),选择管理配置 -> 端口转发 -> 添加规则，如下图所示:
+            <img src="images/8001.png" width="2000px" align="center">
 
-            同理添加5000端口规则(内网IP填IP-1),8001端口规则(内网IP填IP-1),8003端口规则(内网IP填IP-1),添加8100的端口规则(内网IP填IP-2),完成后点击应用修改以更新vpc网络
+            同理添加5000端口规则(内网IP填IP-1，源端口和内网端口均是5000),8001端口规则(内网IP填IP-1,源端口和内网端口均是8001),8003端口规则(内网IP填IP-1,源端口和内网端口均是8003),添加8100的端口规则(内网IP填IP-2,源端口和内网端口均是8100),完成后点击应用修改以更新vpc网络, 如下图所示:
+            <img src="images/updatevpc.png" width="2000px" align="center">
 
             接下来需要对vpc网络中的防火墙进行配置，找到创建的vpc网络，看路由器属性中的防火墙的标识，进入防火墙设置(安全 -> 防火墙),根据标识找到对应的防火墙，点击进入防火墙的配置界面，对下行规则作配置，开放8100,8003端口,如下图所示:
-            <img src="images/firewall.png" width="1200px" align="center">
+            <img src="images/firewall.png" width="2000px" align="center">
 
         * 访问区块链监控平台
 
@@ -229,3 +256,6 @@
 
         {"Message":"       {\"channel_id\":\"mychannel\",\"chaincode_id\":\"230sg26xgo:\",\"transaction_id\":\"72b9c26c52e36e1824ca82901e0973de5081e7e8278a321c3c3f4bb719edf934\",\"timestamp\":{\"seconds\":1501762390,\"nanos\":24401339},\"creator_id\":\"CgdPcmcxTVNQEq4GLS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUNMRENDQWRLZ0F3SUJBZ0lSQUtaSGhlQ1pQRStHTUxSVjJXWEJyMTB3Q2dZSUtvWkl6ajBFQXdJd2NERUwKTUFrR0ExVUVCaE1DVlZNeEV6QVJCZ05WQkFnVENrTmhiR2xtYjNKdWFXRXhGakFVQmdOVkJBY1REVk5oYmlCRwpjbUZ1WTJselkyOHhHVEFYQmdOVkJBb1RFRzl5WnpFdVpYaGhiWEJzWlM1amIyMHhHVEFYQmdOVkJBTVRFRzl5Clp6RXVaWGhoYlhCc1pTNWpiMjB3SGhjTk1UY3dOREl5TVRJd01qVTJXaGNOTWpjd05ESXdNVEl3TWpVMldqQmIKTVFzd0NRWURWUVFHRXdKVlV6RVRNQkVHQTFVRUNCTUtRMkZzYVdadmNtNXBZVEVXTUJRR0ExVUVCeE1OVTJGdQpJRVp5WVc1amFYTmpiekVmTUIwR0ExVUVBd3dXVlhObGNqRkFiM0puTVM1bGVHRnRjR3hsTG1OdmJUQlpNQk1HCkJ5cUdTTTQ5QWdFR0NDcUdTTTQ5QXdFSEEwSUFCRlVLdU5DbGl3VjlFNHRtU2JXV2QzdHYvNFpFNms0Q0dJaVkKYUtOSmpIWUk2WVZqbFRNRWwyTnJzU1djT01aMWF5cys5eEoyRXdqc1F2RGFpWkJuSlBlallqQmdNQTRHQTFVZApEd0VCL3dRRUF3SUZvREFUQmdOVkhTVUVEREFLQmdnckJnRUZCUWNEQVRBTUJnTlZIUk1CQWY4RUFqQUFNQ3NHCkExVWRJd1FrTUNLQUlLSXRyelZyS3F0WGt1cFQ0MTltL003eDEvR3FLem9ya3R2NytXcEVqcUpxTUFvR0NDcUcKU000OUJBTUNBMGdBTUVVQ0lRRDNoc0hTMURTOU94N3RxNDZwN3gwUVdQOXljKytNN1hBN1BSZjhMN3dYL1FJZwpVMExkSVhKcmh4QVhYMjl0Qy9xRzJRR1BBNFQ1UVRDS1paY1ZOYUFUL0xRPQotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tCg==\",\"payload_size\":2040}"}
         ```
+
+    + 联系方式
+      * 邮箱: dev@arxanfintech.com
