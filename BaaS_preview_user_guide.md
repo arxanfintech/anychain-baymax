@@ -25,24 +25,24 @@
 
         为达到演示效果，我们提供了一个内置样例智能合约，合约中有两个账户a和b。在区块链平台启动后会初始化两个账户及其余额，您可以通过BaaS提供的API接口执行用户a和b之间的转账操作和账户余额查询，详细使用说明请参考API接口部分。
 
-        <b>系统会统计区块链运行状态信息，比如系统历史区块数量、交易数量等，并通过折线图在监控界面中展现出来，为更好的向用户展示统计功能以及观察区块以及交易的变化，我们会在后台每隔五分钟自动执行一批模拟的区块链转账交易。如果在这个时候执行invoke脚本，返回失败的信息是正常的,应该等模拟交易执行完再执行脚本</b>
+        <b>系统会统计区块链运行状态信息，比如系统历史区块数量、交易数量等，并通过折线图在监控界面中展现出来，为更好的向用户展示统计功能以及观察区块以及交易的变化，我们会在后台每隔五分钟自动执行一批模拟的区块链转账交易。</b>
 
     + 部署手册
         * 登录[青云web管理终端](https://console.qingcloud.com)
 
         * 创建vpc网络
 
-            计算与网络 -> vpc网络 -> 创建vpc网络 -> 填入vpc网络名称 -> 创建,见下图步骤:
+            计算与网络 -> vpc网络 -> 创建vpc网络 -> 填入vpc网络名称 -> 创建，见下图步骤:
 
             <img src="images/createvpc.png" width="2000px" align="center">
 
         * 创建私有网络
 
-            计算与网络 -> 私有网络 -> 创建 -> 填入私有网络名称 -> 提交, 见下图:
+            计算与网络 -> 私有网络 -> 创建 -> 填入私有网络名称 -> 提交， 见下图:
 
             <img src="images/createprivatenet.png" width="2000px" align="center">
 
-            然后选择该私有网络加入到vpc网络, 见下图步骤:
+            然后选择该私有网络加入到vpc网络， 见下图步骤:
 
             <img src="images/net-vpc.png" width="2000px" align="center">
 
@@ -58,7 +58,7 @@
 
         * 部署区块链服务
 
-            进入[青云官网AppCenter中心](https://appcenter.qingcloud.com/)，在”搜索应用”栏搜索”阿尔山区块链平台预览版”,进入应用后选择部署到QingCloud,对各个节点完成设置后(网络设置选择前面创建的私有网络)，如下图所示:
+            进入[青云官网AppCenter中心](https://appcenter.qingcloud.com/)，在”搜索应用”栏搜索”阿尔山区块链平台”，选择版本“Preview v1.0”进行部署，对各个节点设置如下图所示，其中网络设置，请选择前面创建的私有网络:
 
             <img src="images/cluster-setting-1.png" width="2000px" align="center">
 
@@ -68,24 +68,39 @@
 
             <img src="images/cluster-setting-4.png" width="2000px" align="center">
 
-            在集群列表中可以看到有３个节点正在创建，角色分别是区块链节点,区块链监控节点和代理节点, 如下图所示:
+            点击提交后，在集群列表中可以看到有３个节点正在创建中，角色分别是区块链节点，区块链监控节点以及代理节点， 如下图所示:
 
             <img src="images/cluster.png" width="2000px" align="center">
 
         * 网络配置
 
-            在上一步中，我们可以看到有3个角色创建(对应上图中左边红圈起来的部分),这些角色在创建完成后有对应的内网IP,接下来的网络设置中需要用到区块链监控节点的内网IP(上图中内网IP为192.168.0.3,这个内网IP是由青云调度生成的，在此假设为IP-1)以及代理节点的内网IP(对应上图中的192.168.0.4, 在此假设为IP-2),然后找到创建的vpc网络(计算与网络 -> vpc网络 -> 选择创建的vpc网络),选择管理配置 -> 端口转发 -> 添加规则，如下图所示:
-            <img src="images/8001.png" width="2000px" align="center">
+            为了能够通过公网地址访问区块链监控平台以及API服务，我们需要进行必要的端口转发配置，并在防火墙设置中增加一些规则，具体端口列表如下所示：
 
-            同理添加5000端口规则(内网IP填IP-1，源端口和内网端口均是5000),8001端口规则(内网IP填IP-1,源端口和内网端口均是8001),8003端口规则(内网IP填IP-1,源端口和内网端口均是8003),添加8100的端口规则(内网IP填IP-2,源端口和内网端口均是8100),完成后点击应用修改以更新vpc网络, 如下图所示:
-            <img src="images/updatevpc.png" width="2000px" align="center">
+            + 区块链监控节点
+                - 5000端口：消息推送服务端口，为监控平台前端页面使用
+                - 8001端口：区块链监控服务端口
+                - 8003端口：区块链RESTFul API端口，为用户开发及调试使用
+            + 代理节点
+                - 8100端口：区块链监控平台Web服务代理端口
 
-            接下来需要对vpc网络中的防火墙进行配置，找到创建的vpc网络，看路由器属性中的防火墙的标识，进入防火墙设置(安全 -> 防火墙),根据标识找到对应的防火墙，点击进入防火墙的配置界面，对下行规则作配置，开放8100,8003端口,如下图所示:
-            <img src="images/firewall.png" width="2000px" align="center">
+            + 各个节点对应的内网IP，可以在青云的集群列表中找到。配置端口转发的具体操作步骤，包括：
 
-        * 访问区块链监控平台
+                1. 找到创建的vpc网络(计算与网络 -> vpc网络 -> 选择创建的vpc网络)。
+                2. 选择管理配置 -> 端口转发 -> 添加规则，如下图所示:
+                <img src="images/8001.png" width="2000px" align="center">
 
-            http://公网IP:8100/#/blockchain(以用户名arxan,密码admin登录)
+                3. 完成后点击应用修改以更新vpc网络
+
+            + 防火墙配置
+
+                1. 找到创建的vpc网络。
+                2. 进入防火墙设置(安全 -> 防火墙)
+                3. 对下行规则作配置，开放5000，8001，8100，8003端口，如下图所示:
+                <img src="images/firewall.png" width="2000px" align="center">
+
+        * 访问区块链监控平台Web界面
+
+            http://公网IP:8100/#/blockchain(以用户名arxan，密码admin登录)
 
     + 可以使用的接口
         * 通过RESTful API可以进行如下操作
@@ -101,8 +116,8 @@
                     ```
                     {
                        "payload": {
-                          "chaincode_id": "mycc",
-                          "args": ["invoke", "a", "b", "1"]
+                          "chaincode_id": "mycc"，
+                          "args": ["invoke"， "a"， "b"， "1"]
                        }
                     }
                     ```
@@ -117,7 +132,7 @@
                     交易失败返回值为：
 
                       ```
-                      {"Code": "交易失败代码", "Message":"交易失败原因"}
+                      {"Code": "交易失败代码"， "Message":"交易失败原因"}
                       ```
 
                     交易成功返回值为：
@@ -144,8 +159,8 @@
                     ```
                     {
                        "payload": {
-                          "chaincode_id": "mycc",
-                          "args": ["query", "a"]
+                          "chaincode_id": "mycc"，
+                          "args": ["query"， "a"]
                        }
                     }
                     ```
@@ -179,22 +194,22 @@
                   失败返回值同交易发起接口，成功返回值如下：
 
                   ```
-                  {"Message":"{\"channel_id\":\"mychannel\",\"chaincode_id\":\"mycc:\",\"transaction_id\":\"72b9c26c52e36e1824ca82901e0973de5081e7e8278a321c3c3f4bb719edf934\",\"timestamp\":{\"seconds\":1501762390,\"nanos\":24401339},\"creator_id\":\"CgdPcmcxTVNQEq4GLS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUNMRENDQWRLZ0F3SUJBZ0lSQUtaSGhlQ1pQRStHTUxSVjJXWEJyMTB3Q2dZSUtvWkl6ajBFQXdJd2NERUwKTUFrR0ExVUVCaE1DVlZNeEV6QVJCZ05WQkFnVENrTmhiR2xtYjNKdWFXRXhGakFVQmdOVkJBY1REVk5oYmlCRwpjbUZ1WTJselkyOHhHVEFYQmdOVkJBb1RFRzl5WnpFdVpYaGhiWEJzWlM1amIyMHhHVEFYQmdOVkJBTVRFRzl5Clp6RXVaWGhoYlhCc1pTNWpiMjB3SGhjTk1UY3dOREl5TVRJd01qVTJXaGNOTWpjd05ESXdNVEl3TWpVMldqQmIKTVFzd0NRWURWUVFHRXdKVlV6RVRNQkVHQTFVRUNCTUtRMkZzYVdadmNtNXBZVEVXTUJRR0ExVUVCeE1OVTJGdQpJRVp5WVc1amFYTmpiekVmTUIwR0ExVUVBd3dXVlhObGNqRkFiM0puTVM1bGVHRnRjR3hsTG1OdmJUQlpNQk1HCkJ5cUdTTTQ5QWdFR0NDcUdTTTQ5QXdFSEEwSUFCRlVLdU5DbGl3VjlFNHRtU2JXV2QzdHYvNFpFNms0Q0dJaVkKYUtOSmpIWUk2WVZqbFRNRWwyTnJzU1djT01aMWF5cys5eEoyRXdqc1F2RGFpWkJuSlBlallqQmdNQTRHQTFVZApEd0VCL3dRRUF3SUZvREFUQmdOVkhTVUVEREFLQmdnckJnRUZCUWNEQVRBTUJnTlZIUk1CQWY4RUFqQUFNQ3NHCkExVWRJd1FrTUNLQUlLSXRyelZyS3F0WGt1cFQ0MTltL003eDEvR3FLem9ya3R2NytXcEVqcUpxTUFvR0NDcUcKU000OUJBTUNBMGdBTUVVQ0lRRDNoc0hTMURTOU94N3RxNDZwN3gwUVdQOXljKytNN1hBN1BSZjhMN3dYL1FJZwpVMExkSVhKcmh4QVhYMjl0Qy9xRzJRR1BBNFQ1UVRDS1paY1ZOYUFUL0xRPQotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tCg==\",\"payload_size\":2040}"}
+                  {"Message":"{\"channel_id\":\"mychannel\"，\"chaincode_id\":\"mycc:\"，\"transaction_id\":\"72b9c26c52e36e1824ca82901e0973de5081e7e8278a321c3c3f4bb719edf934\"，\"timestamp\":{\"seconds\":1501762390，\"nanos\":24401339}，\"creator_id\":\"CgdPcmcxTVNQEq4GLS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUNMRENDQWRLZ0F3SUJBZ0lSQUtaSGhlQ1pQRStHTUxSVjJXWEJyMTB3Q2dZSUtvWkl6ajBFQXdJd2NERUwKTUFrR0ExVUVCaE1DVlZNeEV6QVJCZ05WQkFnVENrTmhiR2xtYjNKdWFXRXhGakFVQmdOVkJBY1REVk5oYmlCRwpjbUZ1WTJselkyOHhHVEFYQmdOVkJBb1RFRzl5WnpFdVpYaGhiWEJzWlM1amIyMHhHVEFYQmdOVkJBTVRFRzl5Clp6RXVaWGhoYlhCc1pTNWpiMjB3SGhjTk1UY3dOREl5TVRJd01qVTJXaGNOTWpjd05ESXdNVEl3TWpVMldqQmIKTVFzd0NRWURWUVFHRXdKVlV6RVRNQkVHQTFVRUNCTUtRMkZzYVdadmNtNXBZVEVXTUJRR0ExVUVCeE1OVTJGdQpJRVp5WVc1amFYTmpiekVmTUIwR0ExVUVBd3dXVlhObGNqRkFiM0puTVM1bGVHRnRjR3hsTG1OdmJUQlpNQk1HCkJ5cUdTTTQ5QWdFR0NDcUdTTTQ5QXdFSEEwSUFCRlVLdU5DbGl3VjlFNHRtU2JXV2QzdHYvNFpFNms0Q0dJaVkKYUtOSmpIWUk2WVZqbFRNRWwyTnJzU1djT01aMWF5cys5eEoyRXdqc1F2RGFpWkJuSlBlallqQmdNQTRHQTFVZApEd0VCL3dRRUF3SUZvREFUQmdOVkhTVUVEREFLQmdnckJnRUZCUWNEQVRBTUJnTlZIUk1CQWY4RUFqQUFNQ3NHCkExVWRJd1FrTUNLQUlLSXRyelZyS3F0WGt1cFQ0MTltL003eDEvR3FLem9ya3R2NytXcEVqcUpxTUFvR0NDcUcKU000OUJBTUNBMGdBTUVVQ0lRRDNoc0hTMURTOU94N3RxNDZwN3gwUVdQOXljKytNN1hBN1BSZjhMN3dYL1FJZwpVMExkSVhKcmh4QVhYMjl0Qy9xRzJRR1BBNFQ1UVRDS1paY1ZOYUFUL0xRPQotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tCg==\"，\"payload_size\":2040}"}
                   ```
 
                   查询交易状态成功，返回Code默认为0，Message为Json格式的字符串，可以解析为以下结构体：
 
                   ```
                   {
-                    "channel_id": "交易所在的区块链（chain)的ID",
-                    "chaincode_id": "交易所在的智能合约ID",
-                    "transaction_id": "交易ID",
-                    "timestamp": "交易发起的时间戳",
-                    "creator_id": "创建者的认证信息",
-                    "payload_size": "交易量大小",
+                    "channel_id": "交易所在的区块链（chain)的ID"，
+                    "chaincode_id": "交易所在的智能合约ID"，
+                    "transaction_id": "交易ID"，
+                    "timestamp": "交易发起的时间戳"，
+                    "creator_id": "创建者的认证信息"，
+                    "payload_size": "交易量大小"，
                   }
                   ```
-        * 执行脚本，方便测试API的可用性,脚本内容如下:
+        * 执行脚本，方便测试API的可用性，脚本内容如下:
 
         ```
         #!/bin/bash
@@ -208,7 +223,7 @@
         elif [ "$method" == "querytxn" ]; then
           curl -XPOST ${addr}/api/v1/blockchain/transaction/"$2"; echo
         else
-          echo "invalid method, must be one of [query,invoke,querytxn]."
+          echo "invalid method， must be one of [query，invoke，querytxn]."
           exit -1
         fi
         ```
@@ -218,8 +233,8 @@
         ```
         {
             "payload": {
-                "chaincode_id": "mycc",
-                "args": ["query", "a"]
+                "chaincode_id": "mycc"，
+                "args": ["query"， "a"]
             }
         }
         ```
@@ -229,8 +244,8 @@
         ```
         {
             "payload": {
-                "chaincode_id": "mycc",
-                "args": ["invoke", "a", "b", "1"]
+                "chaincode_id": "mycc"，
+                "args": ["invoke"， "a"， "b"， "1"]
             }
          }
          ```
@@ -254,7 +269,7 @@
 
         $ ./bciq.sh querytxn 外网IP 72b9c26c52e36e1824ca82901e0973de5081e7e8278a321c3c3f4bb719edf934
 
-        {"Message":"       {\"channel_id\":\"mychannel\",\"chaincode_id\":\"230sg26xgo:\",\"transaction_id\":\"72b9c26c52e36e1824ca82901e0973de5081e7e8278a321c3c3f4bb719edf934\",\"timestamp\":{\"seconds\":1501762390,\"nanos\":24401339},\"creator_id\":\"CgdPcmcxTVNQEq4GLS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUNMRENDQWRLZ0F3SUJBZ0lSQUtaSGhlQ1pQRStHTUxSVjJXWEJyMTB3Q2dZSUtvWkl6ajBFQXdJd2NERUwKTUFrR0ExVUVCaE1DVlZNeEV6QVJCZ05WQkFnVENrTmhiR2xtYjNKdWFXRXhGakFVQmdOVkJBY1REVk5oYmlCRwpjbUZ1WTJselkyOHhHVEFYQmdOVkJBb1RFRzl5WnpFdVpYaGhiWEJzWlM1amIyMHhHVEFYQmdOVkJBTVRFRzl5Clp6RXVaWGhoYlhCc1pTNWpiMjB3SGhjTk1UY3dOREl5TVRJd01qVTJXaGNOTWpjd05ESXdNVEl3TWpVMldqQmIKTVFzd0NRWURWUVFHRXdKVlV6RVRNQkVHQTFVRUNCTUtRMkZzYVdadmNtNXBZVEVXTUJRR0ExVUVCeE1OVTJGdQpJRVp5WVc1amFYTmpiekVmTUIwR0ExVUVBd3dXVlhObGNqRkFiM0puTVM1bGVHRnRjR3hsTG1OdmJUQlpNQk1HCkJ5cUdTTTQ5QWdFR0NDcUdTTTQ5QXdFSEEwSUFCRlVLdU5DbGl3VjlFNHRtU2JXV2QzdHYvNFpFNms0Q0dJaVkKYUtOSmpIWUk2WVZqbFRNRWwyTnJzU1djT01aMWF5cys5eEoyRXdqc1F2RGFpWkJuSlBlallqQmdNQTRHQTFVZApEd0VCL3dRRUF3SUZvREFUQmdOVkhTVUVEREFLQmdnckJnRUZCUWNEQVRBTUJnTlZIUk1CQWY4RUFqQUFNQ3NHCkExVWRJd1FrTUNLQUlLSXRyelZyS3F0WGt1cFQ0MTltL003eDEvR3FLem9ya3R2NytXcEVqcUpxTUFvR0NDcUcKU000OUJBTUNBMGdBTUVVQ0lRRDNoc0hTMURTOU94N3RxNDZwN3gwUVdQOXljKytNN1hBN1BSZjhMN3dYL1FJZwpVMExkSVhKcmh4QVhYMjl0Qy9xRzJRR1BBNFQ1UVRDS1paY1ZOYUFUL0xRPQotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tCg==\",\"payload_size\":2040}"}
+        {"Message":"       {\"channel_id\":\"mychannel\"，\"chaincode_id\":\"230sg26xgo:\"，\"transaction_id\":\"72b9c26c52e36e1824ca82901e0973de5081e7e8278a321c3c3f4bb719edf934\"，\"timestamp\":{\"seconds\":1501762390，\"nanos\":24401339}，\"creator_id\":\"CgdPcmcxTVNQEq4GLS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUNMRENDQWRLZ0F3SUJBZ0lSQUtaSGhlQ1pQRStHTUxSVjJXWEJyMTB3Q2dZSUtvWkl6ajBFQXdJd2NERUwKTUFrR0ExVUVCaE1DVlZNeEV6QVJCZ05WQkFnVENrTmhiR2xtYjNKdWFXRXhGakFVQmdOVkJBY1REVk5oYmlCRwpjbUZ1WTJselkyOHhHVEFYQmdOVkJBb1RFRzl5WnpFdVpYaGhiWEJzWlM1amIyMHhHVEFYQmdOVkJBTVRFRzl5Clp6RXVaWGhoYlhCc1pTNWpiMjB3SGhjTk1UY3dOREl5TVRJd01qVTJXaGNOTWpjd05ESXdNVEl3TWpVMldqQmIKTVFzd0NRWURWUVFHRXdKVlV6RVRNQkVHQTFVRUNCTUtRMkZzYVdadmNtNXBZVEVXTUJRR0ExVUVCeE1OVTJGdQpJRVp5WVc1amFYTmpiekVmTUIwR0ExVUVBd3dXVlhObGNqRkFiM0puTVM1bGVHRnRjR3hsTG1OdmJUQlpNQk1HCkJ5cUdTTTQ5QWdFR0NDcUdTTTQ5QXdFSEEwSUFCRlVLdU5DbGl3VjlFNHRtU2JXV2QzdHYvNFpFNms0Q0dJaVkKYUtOSmpIWUk2WVZqbFRNRWwyTnJzU1djT01aMWF5cys5eEoyRXdqc1F2RGFpWkJuSlBlallqQmdNQTRHQTFVZApEd0VCL3dRRUF3SUZvREFUQmdOVkhTVUVEREFLQmdnckJnRUZCUWNEQVRBTUJnTlZIUk1CQWY4RUFqQUFNQ3NHCkExVWRJd1FrTUNLQUlLSXRyelZyS3F0WGt1cFQ0MTltL003eDEvR3FLem9ya3R2NytXcEVqcUpxTUFvR0NDcUcKU000OUJBTUNBMGdBTUVVQ0lRRDNoc0hTMURTOU94N3RxNDZwN3gwUVdQOXljKytNN1hBN1BSZjhMN3dYL1FJZwpVMExkSVhKcmh4QVhYMjl0Qy9xRzJRR1BBNFQ1UVRDS1paY1ZOYUFUL0xRPQotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tCg==\"，\"payload_size\":2040}"}
         ```
 
     + 联系方式
